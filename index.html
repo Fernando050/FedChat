@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ht">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#00E5FF">
+    <title>FedChat</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&family=Sedgwick+Ave+Display&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="login-screen" class="screen">
+        <h1 class="graffiti-logo">FedChat</h1>
+        <p>Antre non w pou kòmanse chat la</p>
+        <input type="text" id="username-input" placeholder="Non ou..." autocomplete="off">
+        <button id="join-btn">Antre nan FedChat</button>
+    </div>
+
+    <div id="chat-screen" class="screen hidden">
+        <header>
+            <h1 class="graffiti-logo small-logo">FedChat</h1>
+            <span id="current-user-display"></span>
+        </header>
+        
+        <main id="chat-box">
+            </main>
+
+        <footer>
+            <form id="message-form">
+                <input type="text" id="message-input" placeholder="Ekri yon mesaj..." autocomplete="off" required>
+                <button type="submit" id="send-btn">Voye</button>
+            </form>
+        </footer>
+    </div>
+
+    <script type="module" src="app.js"></script>
+</body>
+</html>
