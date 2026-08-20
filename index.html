@@ -3,78 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FedChat - Sekirite ak Stil</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Sedgwick+Ave+Display&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    
+    <title>FedChat - Pro Edition</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <!-- FontAwesome Ikòn Pro -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
-
-    <script defer src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-    <script defer src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
-    <script defer src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 </head>
 <body>
 
-    <audio id="notificationSound" src="https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3" preload="auto"></audio>
+    <div class="glass-container active" id="mainApp">
+        <!-- Header ak Logo Pro -->
+        <header class="chat-header">
+            <div class="logo-container">
+                <!-- Logo FedChat SVG -->
+                <svg width="130" height="35" viewBox="0 0 150 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M10 20 L25 5 L40 20 L25 35 Z" fill="url(#gradient)"/>
+                    <text x="50" y="28" font-family="'Poppins', sans-serif" font-weight="bold" font-size="24" fill="#ffffff">Fed<tspan fill="#00ffcc">Chat</tspan></text>
+                    <defs>
+                        <linearGradient id="gradient" x1="10" y1="5" x2="40" y2="35" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#00ffcc"/>
+                            <stop offset="1" stop-color="#0088cc"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+            </div>
+            <div class="header-actions">
+                <button class="pro-btn-icon" title="Apèl Odyo"><i class="fa-solid fa-phone"></i></button>
+                <button class="pro-btn-icon" title="Apèl Videyo"><i class="fa-solid fa-video"></i></button>
+                <button class="pro-btn-icon" title="Anviwònman"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+            </div>
+        </header>
 
-    <div class="glass-container active" id="authScreen">
-        <h1 class="graffiti-logo">FedChat</h1>
-        
-        <div id="loginForm">
-            <p class="subtitle">Konekte pou w antre nan zòn nan</p>
-            <div class="input-group">
-                <input type="text" id="loginId" placeholder="Antre ID ou">
-            </div>
-            <div class="input-group">
-                <input type="password" id="loginPassword" placeholder="Modpas ou">
-            </div>
-            <button class="btn graffiti-btn" id="loginBtn">Konekte</button>
-            <p class="switch-text">Ou pa gen kont? <span id="showSignup">Kreye youn</span></p>
-        </div>
+        <div class="chat-body-wrapper">
+            <!-- Sidebar -->
+            <aside class="contacts-sidebar">
+                <h3><i class="fa-solid fa-users"></i> Kontak</h3>
+                <div class="user-item">
+                    <div class="status-indicator status-online"></div>
+                    <span>Valentia</span>
+                </div>
+            </aside>
 
-        <div id="signupForm" style="display: none;">
-            <p class="subtitle">Kreye yon ID inik pou w kòmanse</p>
-            <div class="input-group">
-                <input type="text" id="signupId" placeholder="Kreye yon ID">
-            </div>
-            <div class="input-group">
-                <input type="password" id="signupPassword" placeholder="Kreye yon Modpas">
-            </div>
-            <button class="btn graffiti-btn" id="signupBtn">Anrejistre kont lan</button>
-            <p class="switch-text">Ou gen kont deja? <span id="showLogin">Konekte la a</span></p>
+            <!-- Zòn Chat Prensipal la -->
+            <main class="chat-main-column">
+                <div class="messages-area" id="messagesArea">
+                    <div class="system-message">Koneksyon sekirize. Kòmanse pale.</div>
+                    <!-- Mesaj yo ap parèt isit la -->
+                </div>
+
+                <!-- Panèl Stickers (Kache pa defo) -->
+                <div class="stickers-panel" id="stickersPanel">
+                    <img src="https://cdn-icons-png.flaticon.com/128/4786/4786093.png" class="sticker-item" alt="Sticker 1">
+                    <img src="https://cdn-icons-png.flaticon.com/128/4786/4786105.png" class="sticker-item" alt="Sticker 2">
+                    <img src="https://cdn-icons-png.flaticon.com/128/4786/4786071.png" class="sticker-item" alt="Sticker 3">
+                </div>
+
+                <div class="input-area">
+                    <button class="pro-btn-icon" id="toggleStickers" title="Stickers"><i class="fa-solid fa-face-smile"></i></button>
+                    
+                    <label for="imageUpload" class="pro-btn-icon" title="Voye Foto">
+                        <i class="fa-solid fa-image"></i>
+                    </label>
+                    <input type="file" id="imageUpload" accept="image/*" style="display: none;">
+                    
+                    <button class="pro-btn-icon" id="recordVoiceBtn" title="Voye Vwa"><i class="fa-solid fa-microphone"></i></button>
+                    
+                    <input type="text" id="messageInput" placeholder="Ekri yon mesaj...">
+                    
+                    <button class="send-btn" id="sendBtn"><i class="fa-solid fa-paper-plane"></i></button>
+                </div>
+            </main>
         </div>
     </div>
 
-    <div class="chat-container glass-container" id="chatScreen">
-        <div class="chat-header">
-            <div class="user-info">
-                <span class="status-dot"></span>
-                <span id="myIdDisplay" class="my-id-text">Konekte kòm: ...</span>
-            </div>
-            <button class="btn danger-btn-sm" id="logoutBtn">Dekonekte</button>
-        </div>
-
-        <div class="connect-peer-box">
-            <input type="text" id="peerIdInput" placeholder="Antre ID moun ou vle pale avè l la...">
-            <button class="btn connect-btn" id="connectPeerBtn">Kòmanse Pale</button>
-        </div>
-
-        <div class="active-chat-info" id="activeChatInfo" style="display: none;">
-            Ap pale ak: <span id="chattingWithDisplay" class="neon-text">...</span>
-        </div>
-
-        <div class="messages-area" id="messagesArea">
-            <div class="system-message">Antre yon ID anlè a pou w kòmanse yon konvèsasyon sekirize.</div>
-        </div>
-
-        <div class="input-area">
-            <input type="text" id="messageInput" placeholder="Ekri mesaj ou a..." disabled>
-            <button class="btn send-btn" id="sendBtn" disabled>Voye</button>
-        </div>
-    </div>
-
-    <script defer src="script.js"></script>
+    <!-- Firebase Scripts (Mete vèsyon ou abitye itilize yo la) -->
+    <!-- <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script> -->
+    <!-- <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script> -->
+    
+    <script src="app.js"></script>
 </body>
 </html>
