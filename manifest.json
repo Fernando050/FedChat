@@ -1,12 +1,11 @@
 {
-  "name": "FedChat",
+  "name": "FedChat Pwofesyonèl",
   "short_name": "FedChat",
-  "description": "Yon aplikasyon mesaj sekirize",
+  "description": "Aplikasyon mesajri sekirize ak stil pwofesyonèl",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#0f0c29",
   "theme_color": "#00ffcc",
-  "orientation": "portrait",
   "icons": [
     {
       "src": "icon-192.png",
