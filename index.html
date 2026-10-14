@@ -27,7 +27,7 @@
     <audio id="notificationSound" src="https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3" preload="auto"></audio>
     <audio id="ringtoneSound" src="https://assets.mixkit.co/active_storage/sfx/2813/2813-preview.mp3" loop preload="auto"></audio>
 
-    <!-- EKRAN OTANTIFIKASYON (Sèl sa ki parèt an premye) -->
+    <!-- EKRAN OTANTIFIKASYON -->
     <div class="glass-container active" id="authScreen">
         <h1 class="graffiti-logo">FedChat</h1>
         
@@ -60,7 +60,7 @@
         </div>
     </div>
 
-    <!-- EKRAN PRINCIPAL CHAT (Kache nèt toutotan itilizatè a pa konekte) -->
+    <!-- EKRAN PRINCIPAL CHAT -->
     <div class="chat-container glass-container" id="chatScreen">
         
         <!-- SIDEBAR / LIS CHAT -->
@@ -195,14 +195,14 @@
                 <span></span><span></span><span></span> <em>Zanmi w ap ekri...</em>
             </div>
 
-            <!-- INPUT AREA -->
+            <!-- INPUT AREA (Sèvi ak TEXTAREA pou pèmèt sote liy) -->
             <div class="input-area">
                 <input type="file" id="imageInput" accept="image/*" style="display: none;">
                 <button class="icon-btn" id="attachBtn" title="Voye Foto"><i class="fa-solid fa-image"></i></button>
                 <button class="icon-btn" id="stickerBtn" title="Stickers"><i class="fa-solid fa-face-smile"></i></button>
                 <button class="icon-btn" id="voiceBtn" title="Voye Vwa"><i class="fa-solid fa-microphone"></i></button>
                 
-                <input type="text" id="messageInput" placeholder="Ekri mesaj ou a..." disabled>
+                <textarea id="messageInput" placeholder="Ekri mesaj ou a..." rows="1" disabled></textarea>
                 <button class="btn send-btn" id="sendBtn" disabled><i class="fa-solid fa-paper-plane"></i></button>
             </div>
         </div>
