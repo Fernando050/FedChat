@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ht">
+<html lang="ht,fr,en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FedChat - Sekirite ak Stil Pwofesyonèl</title>
+    <title>FedChat - Sécurité et Style Professionnel</title>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#00ffcc">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -26,150 +26,154 @@
     <audio id="notificationSound" src="https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3" preload="auto"></audio>
     <audio id="ringtoneSound" src="https://assets.mixkit.co/active_storage/sfx/2813/2813-preview.mp3" loop preload="auto"></audio>
 
-    <!-- EKRAN OTANTIFIKASYON -->
+    <!-- ÉCRAN D'AUTHENTIFICATION -->
     <div class="glass-container active" id="authScreen">
         <h1 class="graffiti-logo">FedChat</h1>
         
         <div id="loginForm">
-            <p class="subtitle">Konekte pou w antre nan zòn nan</p>
+            <p class="subtitle">Connectez-vous pour accéder à votre espace</p>
             <div class="input-group">
                 <i class="fa-solid fa-user"></i>
-                <input type="text" id="loginId" placeholder="Antre ID ou">
+                <input type="text" id="loginId" placeholder="Entrez votre ID">
             </div>
             <div class="input-group">
                 <i class="fa-solid fa-lock"></i>
-                <input type="password" id="loginPassword" placeholder="Modpas ou">
+                <input type="password" id="loginPassword" placeholder="Votre mot de passe">
             </div>
-            <button class="btn graffiti-btn" id="loginBtn"><i class="fa-solid fa-right-to-bracket"></i> Konekte</button>
-            <p class="switch-text">Ou pa gen kont? <span id="showSignup">Kreye youn</span></p>
+            <button class="btn graffiti-btn" id="loginBtn"><i class="fa-solid fa-right-to-bracket"></i> Se connecter</button>
+            <p class="switch-text">Vous n'avez pas de compte ? <span id="showSignup">Créer un compte</span></p>
         </div>
 
         <div id="signupForm" style="display: none;">
-            <p class="subtitle">Kreye yon ID inik pou kòmanse</p>
+            <p class="subtitle">Créez un ID unique pour commencer</p>
             <div class="input-group">
                 <i class="fa-solid fa-user-plus"></i>
-                <input type="text" id="signupId" placeholder="Kreye yon ID">
+                <input type="text" id="signupId" placeholder="Créez un ID">
             </div>
             <div class="input-group">
                 <i class="fa-solid fa-lock"></i>
-                <input type="password" id="signupPassword" placeholder="Kreye yon modpas">
+                <input type="password" id="signupPassword" placeholder="Créez un mot de passe">
             </div>
-            <button class="btn graffiti-btn" id="signupBtn"><i class="fa-solid fa-user-check"></i> Anrejistre kont lan</button>
-            <p class="switch-text">Ou gen kont deja? <span id="showLogin">Konekte la a</span></p>
+            <button class="btn graffiti-btn" id="signupBtn"><i class="fa-solid fa-user-check"></i> S'inscrire</button>
+            <p class="switch-text">Vous avez déjà un compte ? <span id="showLogin">Se connecter</span></p>
         </div>
     </div>
 
-    <!-- EKRAN PRINCIPAL CHAT -->
+    <!-- ÉCRAN PRINCIPAL DE CHAT -->
     <div class="chat-container glass-container" id="chatScreen">
         
-        <!-- SIDEBAR / LIS CHAT -->
+        <!-- SIDEBAR / LISTE DES CHATS -->
         <div class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <div class="user-profile">
                     <div class="avatar-circle"><i class="fa-solid fa-user"></i></div>
-                    <span id="myIdDisplay" class="my-id-text">Konekte...</span>
+                    <span id="myIdDisplay" class="my-id-text">Connexion...</span>
                 </div>
                 <div class="sidebar-actions">
-                    <button id="newChatBtn" title="Nouvo Chat"><i class="fa-solid fa-comment-medical"></i></button>
-                    <button id="mainMenuBtn" title="Anviwònman"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                    <button id="newChatBtn" title="Nouveau Chat"><i class="fa-solid fa-comment-medical"></i></button>
+                    <button id="mainMenuBtn" title="Paramètres"><i class="fa-solid fa-ellipsis-vertical"></i></button>
                 </div>
             </div>
 
             <div class="search-chat">
                 <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" id="searchChatInput" placeholder="Chèche yon konvèsasyon...">
+                <input type="text" id="searchChatInput" placeholder="Rechercher une conversation...">
             </div>
 
             <div class="conversations-list" id="conversationsList">
-                <div class="no-chats-placeholder">Pa gen konvèsasyon anko. Klike sou + pou kòmanse!</div>
+                <div class="no-chats-placeholder">Aucune conversation. Cliquez sur + pour commencer !</div>
             </div>
         </div>
 
-        <!-- ZONE CHAT AKTIF -->
+        <!-- ZONE DE CHAT ACTIF -->
         <div class="chat-main hidden-mobile" id="chatMain">
             <div class="chat-header">
                 <div class="user-info">
-                    <button class="back-list-btn" id="backToListBtn" title="Retounen nan lis la" style="display: none;">
+                    <button class="back-list-btn" id="backToListBtn" title="Retour à la liste" style="display: none;">
                         <i class="fa-solid fa-arrow-left"></i>
                     </button>
                     <div class="chat-avatar"><i class="fa-solid fa-user-shield"></i></div>
                     <div>
-                        <span id="chattingWithDisplay" class="neon-text">Chwazi yon chat</span>
-                        <span id="friendStatusDisplay" class="friend-status">offline</span>
+                        <span id="chattingWithDisplay" class="neon-text">Sélectionnez un chat</span>
+                        <span id="friendStatusDisplay" class="friend-status">Hors ligne</span>
                     </div>
                 </div>
 
                 <div class="chat-header-actions" id="callBtnContainer" style="display:none;">
-                    <button class="header-action-btn" id="audioCallBtn" title="Apèl Odyo"><i class="fa-solid fa-phone"></i></button>
-                    <button class="header-action-btn" id="videoCallBtn" title="Apèl Videyo"><i class="fa-solid fa-video"></i></button>
+                    <button class="header-action-btn" id="audioCallBtn" title="Appel Audio"><i class="fa-solid fa-phone"></i></button>
+                    <button class="header-action-btn" id="videoCallBtn" title="Appel Vidéo"><i class="fa-solid fa-video"></i></button>
+                    <button class="header-action-btn" id="chatHeaderMenuBtn" title="Menu Conversation"><i class="fa-solid fa-ellipsis-vertical"></i></button>
                 </div>
             </div>
 
             <div class="messages-area" id="messagesArea">
-                <div class="system-message"><i class="fa-solid fa-lock"></i> Mesaj ou yo chifre nan bout an bout. Chwazi yon konvèsasyon pou kòmanse.</div>
+                <div class="system-message"><i class="fa-solid fa-lock"></i> Vos messages sont chiffrés de bout en bout. Choisissez une conversation pour commencer.</div>
             </div>
 
-            <!-- TYPING INDICATOR -->
+            <!-- INDICATEUR DE SAISIE -->
             <div id="typingIndicator" class="typing-indicator" style="display: none;">
-                <span></span><span></span><span></span> <em>Zanmi w ap ekri...</em>
+                <span></span><span></span><span></span> <em>En train d'écrire...</em>
             </div>
 
             <!-- INPUT AREA -->
             <div class="input-area">
                 <input type="file" id="imageInput" accept="image/*" style="display: none;">
-                <button class="icon-btn" id="attachBtn" title="Voye Foto"><i class="fa-solid fa-image"></i></button>
+                <button class="icon-btn" id="attachBtn" title="Envoyer une photo"><i class="fa-solid fa-image"></i></button>
                 <button class="icon-btn" id="stickerBtn" title="Stickers"><i class="fa-solid fa-face-smile"></i></button>
-                <button class="icon-btn" id="voiceBtn" title="Voye Vwa"><i class="fa-solid fa-microphone"></i></button>
+                <button class="icon-btn" id="voiceBtn" title="Message vocal"><i class="fa-solid fa-microphone"></i></button>
                 
-                <textarea id="messageInput" placeholder="Ekri mesaj ou a..." rows="1" disabled></textarea>
+                <textarea id="messageInput" placeholder="Écrivez votre message..." rows="1" disabled></textarea>
                 <button class="btn send-btn" id="sendBtn" disabled><i class="fa-solid fa-paper-plane"></i></button>
             </div>
         </div>
 
-        <!-- GLOBAL MENIS AK MODALS (DEPLAse ISIT LA POU YO PA JANM BLOKE) -->
+        <!-- MENU DÉROULANT PARAMÈTRES ET OPTIONS -->
         <div class="dropdown-menu" id="dropdownMenu">
-            <button id="themeBtn"><i class="fa-solid fa-palette"></i> Chanje Tèm</button>
-            <button id="privacyBtn"><i class="fa-solid fa-user-shield"></i> Konfidansyalite</button>
+            <button id="themeBtn"><i class="fa-solid fa-palette"></i> Changer de thème</button>
+            <button id="privacyBtn"><i class="fa-solid fa-user-shield"></i> Confidentialité</button>
             <hr>
             <div class="menu-setting">
-                <label for="soundToggle"><i class="fa-solid fa-volume-high"></i> Aktive Son</label>
+                <label for="soundToggle"><i class="fa-solid fa-volume-high"></i> Activer le son</label>
                 <input type="checkbox" id="soundToggle" checked>
             </div>
             <div class="menu-setting">
                 <select id="soundSelect">
-                    <option value="https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3">Son 1 (Defo)</option>
-                    <option value="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3">Son 2 (Kout)</option>
+                    <option value="https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3">Son 1 (Par défaut)</option>
+                    <option value="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3">Son 2 (Court)</option>
                 </select>
             </div>
             <hr>
-            <button id="logoutBtn" style="color: #ff4d4d;"><i class="fa-solid fa-right-from-bracket"></i> Dekonekte</button>
+            <button id="editMsgBtn" class="disabled-menu-item"><i class="fa-solid fa-pen-to-square"></i> Modifier le message</button>
+            <button id="deleteMsgBtn" class="disabled-menu-item" style="color: #ff4d4d;"><i class="fa-solid fa-trash"></i> Supprimer le message</button>
+            <hr>
+            <button id="logoutBtn" style="color: #ff4d4d;"><i class="fa-solid fa-right-from-bracket"></i> Se déconnecter</button>
         </div>
 
-        <!-- MODAL NOUVO CHAT -->
+        <!-- MODAL NOUVEAU CHAT -->
         <div id="newChatModal" class="custom-modal" style="display: none;">
             <div class="modal-content">
-                <h3><i class="fa-solid fa-user-plus"></i> Nouvo Konvèsasyon</h3>
-                <input type="text" id="peerIdInput" placeholder="Antre ID zanmi w lan...">
+                <h3><i class="fa-solid fa-user-plus"></i> Nouvelle Conversation</h3>
+                <input type="text" id="peerIdInput" placeholder="Entrez l'ID de votre ami...">
                 <div class="modal-buttons">
-                    <button class="btn" id="cancelNewChat">Anile</button>
-                    <button class="btn connect-btn" id="connectPeerBtn">Kòmanse Pale</button>
+                    <button class="btn" id="cancelNewChat">Annuler</button>
+                    <button class="btn connect-btn" id="connectPeerBtn">Démarrer</button>
                 </div>
             </div>
         </div>
 
-        <!-- MODAL KONFIDANSYALITE -->
+        <!-- MODAL CONFIDENTIALITÉ -->
         <div id="privacyModal" class="custom-modal" style="display: none;">
             <div class="modal-content">
-                <h3><i class="fa-solid fa-shield-halved"></i> Paramèt Konfidansyalite</h3>
+                <h3><i class="fa-solid fa-shield-halved"></i> Paramètres de Confidentialité</h3>
                 <div class="privacy-option">
-                    <label>Pataje estati an liy (Online Status)</label>
+                    <label>Statut en ligne</label>
                     <input type="checkbox" id="shareOnlineToggle" checked>
                 </div>
                 <div class="privacy-option">
-                    <label>Konfimasyon pou lè w li mesaj (Read Receipts)</label>
+                    <label>Confirmations de lecture</label>
                     <input type="checkbox" id="readReceiptsToggle" checked>
                 </div>
-                <button class="btn graffiti-btn" id="closePrivacyBtn">Fèmen</button>
+                <button class="btn graffiti-btn" id="closePrivacyBtn">Fermer</button>
             </div>
         </div>
 
@@ -184,20 +188,16 @@
                 <span class="sticker-item">👍</span>
                 <span class="sticker-item">👑</span>
                 <span class="sticker-item">💡</span>
-                <span class="sticker-item">😂</span>
-                <span class="sticker-item">🤣</span>
-                <span class="sticker-item">😍</span>
-                <span class="sticker-item">🤪</span>
             </div>
         </div>
 
-        <!-- MODAL APÈL VIDEO/ODYO -->
+        <!-- MODAL APPEL VIDÉO/AUDIO -->
         <div id="videoModal" style="display: none;">
             <video id="remoteVideo" autoplay playsinline></video>
             <video id="localVideo" autoplay muted playsinline></video>
 
             <div class="call-top-info">
-                <div id="callStatus">Apèl ap chaje...</div>
+                <div id="callStatus">Chargement de l'appel...</div>
                 <div id="callTimer" style="display: none;">00:00</div>
             </div>
 
