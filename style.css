@@ -38,7 +38,7 @@ body.light-theme .msg-received { background: rgba(0, 0, 0, 0.08); color: #333; }
 body.light-theme .dropdown-menu { background: #ffffff; box-shadow: 0 5px 25px rgba(0,0,0,0.15); }
 body.light-theme .dropdown-menu button { color: #333; }
 
-/* GLASSMORPHISM DE BAZ */
+/* GLASSMORPHISM DE BASE */
 .glass-container {
     background: rgba(15, 12, 41, 0.75);
     backdrop-filter: blur(20px);
@@ -152,7 +152,7 @@ body.light-theme .dropdown-menu button { color: #333; }
     overflow: hidden;
     display: flex !important;
     flex-direction: row !important;
-    position: relative; /* Enpòtan pou pozisyon absolut yo */
+    position: relative;
 }
 
 /* SIDEBAR */
@@ -354,7 +354,7 @@ body.light-theme .dropdown-menu button { color: #333; }
     background: rgba(255, 255, 255, 0.1);
 }
 
-/* DROPDOWN MENU (Meni paramèt ki kounye a jwenn plas li kòrèkteman) */
+/* DROPDOWN MENU */
 .dropdown-menu {
     position: absolute;
     top: 65px;
@@ -362,7 +362,7 @@ body.light-theme .dropdown-menu button { color: #333; }
     background: #1a1638;
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 12px;
-    width: 220px;
+    width: 230px;
     display: none;
     flex-direction: column;
     z-index: 4000;
@@ -384,8 +384,13 @@ body.light-theme .dropdown-menu button { color: #333; }
     width: 100%;
 }
 
-.dropdown-menu button:hover {
+.dropdown-menu button:hover:not(.disabled-menu-item) {
     background: rgba(255, 255, 255, 0.08);
+}
+
+.disabled-menu-item {
+    opacity: 0.4;
+    cursor: not-allowed !important;
 }
 
 .dropdown-menu hr {
@@ -439,6 +444,13 @@ body.light-theme .dropdown-menu button { color: #333; }
     word-wrap: break-word;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     white-space: pre-wrap;
+    cursor: pointer;
+    border: 2px solid transparent;
+}
+
+.message-bubble.selected {
+    border-color: #00ffcc;
+    box-shadow: 0 0 10px #00ffcc;
 }
 
 .msg-sent {
@@ -708,7 +720,7 @@ body.light-theme .dropdown-menu button { color: #333; }
 
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-/* RESPONSIVE DESIGN POU TELEFÒN AK TABLÈT */
+/* RESPONSIVE DESIGN */
 @media (max-width: 1024px) {
     .chat-container.glass-container.active {
         width: 100%;
