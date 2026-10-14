@@ -1,4 +1,4 @@
-const CACHE_NAME = 'fedchat-v2';
+const CACHE_NAME = 'fedchat-v3';
 const assets = [
   './',
   './index.html',
