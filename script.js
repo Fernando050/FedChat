@@ -24,7 +24,7 @@ if ('serviceWorker' in navigator) {
     });
 }
 
-// Dom Elements
+// Éléments du DOM
 const authScreen = document.getElementById('authScreen');
 const chatScreen = document.getElementById('chatScreen');
 const loginForm = document.getElementById('loginForm');
@@ -33,11 +33,15 @@ const notifSound = document.getElementById('notificationSound');
 const ringtoneSound = document.getElementById('ringtoneSound');
 
 const mainMenuBtn = document.getElementById('mainMenuBtn');
+const chatHeaderMenuBtn = document.getElementById('chatHeaderMenuBtn');
 const dropdownMenu = document.getElementById('dropdownMenu');
 const themeBtn = document.getElementById('themeBtn');
 const privacyBtn = document.getElementById('privacyBtn');
 const privacyModal = document.getElementById('privacyModal');
 const closePrivacyBtn = document.getElementById('closePrivacyBtn');
+
+const editMsgBtn = document.getElementById('editMsgBtn');
+const deleteMsgBtn = document.getElementById('deleteMsgBtn');
 
 const newChatBtn = document.getElementById('newChatBtn');
 const newChatModal = document.getElementById('newChatModal');
@@ -72,6 +76,11 @@ let currentUserId = null;
 let currentPeerId = null;
 let chatRef = null;
 let typingRef = null;
+
+let selectedMessageId = null;
+let selectedMessageSender = null;
+let selectedMessageText = "";
+
 let isSoundEnabled = localStorage.getItem('fedchat_sound_enabled') !== 'false';
 let shareOnline = localStorage.getItem('fedchat_share_online') !== 'false';
 let readReceipts = localStorage.getItem('fedchat_read_receipts') !== 'false';
@@ -123,18 +132,18 @@ document.getElementById('showLogin').addEventListener('click', () => {
 document.getElementById('signupBtn').addEventListener('click', () => {
     const id = document.getElementById('signupId').value.trim().toLowerCase();
     const pass = document.getElementById('signupPassword').value;
-    if(!id || pass.length < 6) return alert("Antre yon ID ak yon modpas (omwen 6 karaktè).");
+    if(!id || pass.length < 6) return alert("Veuillez entrer un ID et un mot de passe (au moins 6 caractères).");
     auth.createUserWithEmailAndPassword(`${id}@fedchat.com`, pass)
-        .then(() => alert("Kont kreye avèk siksè!"))
-        .catch(err => alert("Erè : " + err.message));
+        .then(() => alert("Compte créé avec succès !"))
+        .catch(err => alert("Erreur : " + err.message));
 });
 
 document.getElementById('loginBtn').addEventListener('click', () => {
     const id = document.getElementById('loginId').value.trim().toLowerCase();
     const pass = document.getElementById('loginPassword').value;
-    if(!id || !pass) return alert("Ranpli tout chan yo tanpri.");
+    if(!id || !pass) return alert("Veuillez remplir tous les champs.");
     auth.signInWithEmailAndPassword(`${id}@fedchat.com`, pass)
-        .catch(err => alert("Erè koneksyon. Verifye ID oswa modpas ou."));
+        .catch(err => alert("Erreur de connexion. Vérifiez votre ID ou mot de passe."));
 });
 
 document.getElementById('logoutBtn').addEventListener('click', () => {
@@ -143,13 +152,19 @@ document.getElementById('logoutBtn').addEventListener('click', () => {
 });
 
 // ==========================================
-// 3. MENU & NAVIGATION (WHATSAPP STYLE)
+// 3. MENU & NAVIGATION
 // ==========================================
-mainMenuBtn.addEventListener('click', (e) => {
+function toggleMenu(e) {
     e.stopPropagation();
     dropdownMenu.style.display = dropdownMenu.style.display === 'flex' ? 'none' : 'flex';
+}
+
+mainMenuBtn.addEventListener('click', toggleMenu);
+if(chatHeaderMenuBtn) chatHeaderMenuBtn.addEventListener('click', toggleMenu);
+
+document.addEventListener('click', () => {
+    dropdownMenu.style.display = 'none';
 });
-document.addEventListener('click', () => dropdownMenu.style.display = 'none');
 
 themeBtn.addEventListener('click', () => document.body.classList.toggle('light-theme'));
 privacyBtn.addEventListener('click', () => privacyModal.style.display = 'flex');
@@ -160,29 +175,69 @@ cancelNewChat.addEventListener('click', () => newChatModal.style.display = 'none
 
 connectPeerBtn.addEventListener('click', () => {
     const peer = peerIdInput.value.trim().toLowerCase();
-    if(!peer || peer === currentUserId) return alert("ID sa a pa valab.");
+    if(!peer || peer === currentUserId) return alert("Cet ID n'est pas valide.");
     currentPeerId = peer;
     newChatModal.style.display = 'none';
     peerIdInput.value = '';
     openChat(currentPeerId);
 });
 
-// Bouton pou retounen sou lis konvèsasyon an sou telefòn
 backToListBtn.addEventListener('click', () => {
     sidebar.classList.remove('hidden-mobile');
     chatMain.classList.add('hidden-mobile');
     currentPeerId = null;
+    clearSelection();
+});
+
+function clearSelection() {
+    if(selectedMessageId) {
+        const prevSelected = document.getElementById(`msg_${selectedMessageId}`);
+        if(prevSelected) prevSelected.classList.remove('selected');
+    }
+    selectedMessageId = null;
+    selectedMessageSender = null;
+    selectedMessageText = "";
+    editMsgBtn.classList.add('disabled-menu-item');
+    deleteMsgBtn.classList.add('disabled-menu-item');
+}
+
+// MODIFIER UN MESSAGE
+editMsgBtn.addEventListener('click', () => {
+    if(!selectedMessageId) return;
+    if(selectedMessageSender !== currentUserId) {
+        alert("Vous ne pouvez modifier que vos propres messages.");
+        return;
+    }
+    
+    const newText = prompt("Modifier le message :", selectedMessageText);
+    if(newText && newText.trim() !== "" && newText.trim() !== selectedMessageText) {
+        const chatId = [currentUserId, currentPeerId].sort().join('_');
+        db.ref(`chats/${chatId}/messages/${selectedMessageId}`).update({
+            text: newText.trim(),
+            isEdited: true
+        }).then(() => clearSelection());
+    }
+});
+
+// SUPPRIMER UN MESSAGE
+deleteMsgBtn.addEventListener('click', () => {
+    if(!selectedMessageId) return;
+    if(confirm("Voulez-vous vraiment supprimer ce message ?")) {
+        const chatId = [currentUserId, currentPeerId].sort().join('_');
+        db.ref(`chats/${chatId}/messages/${selectedMessageId}`).remove()
+            .then(() => clearSelection());
+    }
 });
 
 // ==========================================
-// 4. LIS KONVÈSASYON AK CHAT
+// 4. LISTE DES CONVERSATIONS
 // ==========================================
 function loadConversations() {
     db.ref(`users/${currentUserId}/chats`).on('value', (snapshot) => {
         conversationsList.innerHTML = '';
         const chats = snapshot.val();
         if (!chats) {
-            conversationsList.innerHTML = '<div class="no-chats-placeholder">Pa gen konvèsasyon anko.</div>';
+            conversationsList.innerHTML = '<div class="no-chats-placeholder">Aucune conversation pour le moment.</div>';
             return;
         }
 
@@ -194,7 +249,7 @@ function loadConversations() {
                 <div class="avatar-circle"><i class="fa-solid fa-user"></i></div>
                 <div class="conv-info">
                     <div class="conv-name">${peerId}</div>
-                    <div class="conv-last-msg">${chatData.lastMessage || 'Klike pou w pale'}</div>
+                    <div class="conv-last-msg">${chatData.lastMessage || 'Cliquer pour discuter'}</div>
                 </div>
             `;
             div.addEventListener('click', () => openChat(peerId));
@@ -209,8 +264,8 @@ function openChat(peerId) {
     callBtnContainer.style.display = 'flex';
     messageInput.disabled = false;
     sendBtn.disabled = false;
+    clearSelection();
     
-    // Sou telefòn, kache sidebar epi montre chat-main
     if (window.innerWidth <= 768) {
         sidebar.classList.add('hidden-mobile');
         chatMain.classList.remove('hidden-mobile');
@@ -218,14 +273,14 @@ function openChat(peerId) {
 
     db.ref(`users/${peerId}/status`).on('value', (snap) => {
         const status = snap.val();
-        friendStatusDisplay.innerText = status === 'online' ? 'An liy (online)' : 'An offline';
+        friendStatusDisplay.innerText = status === 'online' ? 'En ligne' : 'Hors ligne';
     });
 
     loadMessages();
 }
 
 // ==========================================
-// 5. MESSAGERIE (FOTO, STICKERS, VOICE, MULTILINE)
+// 5. MESSAGERIE (PHOTOS, STICKERS, VOICE, EDIT/DELETE)
 // ==========================================
 function loadMessages() {
     const chatId = [currentUserId, currentPeerId].sort().join('_');
@@ -246,6 +301,7 @@ function loadMessages() {
 
         const div = document.createElement('div');
         div.className = `message-bubble ${isMe ? 'msg-sent' : 'msg-received'}`;
+        div.id = `msg_${msgKey}`;
         
         let contentHtml = '';
         if (msg.type === 'image') {
@@ -253,19 +309,55 @@ function loadMessages() {
         } else if (msg.type === 'audio') {
             contentHtml = `<audio controls src="${msg.text}" style="max-width: 200px;"></audio>`;
         } else {
-            contentHtml = `<span>${msg.text}</span>`;
+            contentHtml = `<span class="msg-txt">${msg.text}</span>`;
         }
 
         const timeStr = new Date(msg.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
         const ticks = isMe ? `<span class="msg-ticks ${msg.status === 'read' ? 'read' : ''}">${msg.status === 'read' ? '✓✓' : '✓'}</span>` : '';
+        const editedTag = msg.isEdited ? ' <em style="font-size:10px; opacity:0.6;">(Modifié)</em>' : '';
         
-        div.innerHTML = `${contentHtml}<span class="msg-time">${timeStr}</span>${ticks}`;
+        div.innerHTML = `${contentHtml}${editedTag}<span class="msg-time">${timeStr}</span>${ticks}`;
+        
+        // Clic pour sélectionner un message
+        div.addEventListener('click', (e) => {
+            e.stopPropagation();
+            clearSelection();
+            
+            selectedMessageId = msgKey;
+            selectedMessageSender = msg.sender;
+            selectedMessageText = msg.text || "";
+            div.classList.add('selected');
+            
+            // Activation des options dans le menu à 3 points
+            deleteMsgBtn.classList.remove('disabled-menu-item');
+            if(isMe && msg.type === 'text') {
+                editMsgBtn.classList.remove('disabled-menu-item');
+            }
+        });
+
         messagesArea.appendChild(div);
         messagesArea.scrollTop = messagesArea.scrollHeight;
 
         if(!isMe && isSoundEnabled && notifSound) {
             notifSound.play().catch(e => console.log(e));
         }
+    });
+
+    chatRef.on('child_changed', (snapshot) => {
+        const msgKey = snapshot.key;
+        const msg = snapshot.val();
+        const msgElem = document.getElementById(`msg_${msgKey}`);
+        if(msgElem && msg.type === 'text') {
+            const txtElem = msgElem.querySelector('.msg-txt');
+            if(txtElem) txtElem.innerText = msg.text;
+        }
+    });
+
+    chatRef.on('child_removed', (snapshot) => {
+        const msgKey = snapshot.key;
+        const msgElem = document.getElementById(`msg_${msgKey}`);
+        if(msgElem) msgElem.remove();
+        clearSelection();
     });
 
     typingRef = db.ref(`chats/${chatId}/typing/${currentPeerId}`);
@@ -310,8 +402,8 @@ function sendMessage(text = null, type = 'text') {
         timestamp: firebase.database.ServerValue.TIMESTAMP
     });
 
-    db.ref(`users/${currentUserId}/chats/${currentPeerId}`).set({ lastMessage: type === 'image' ? '[Foto]' : txt, time: Date.now() });
-    db.ref(`users/${currentPeerId}/chats/${currentUserId}`).set({ lastMessage: type === 'image' ? '[Foto]' : txt, time: Date.now() });
+    db.ref(`users/${currentUserId}/chats/${currentPeerId}`).set({ lastMessage: type === 'image' ? '[Photo]' : txt, time: Date.now() });
+    db.ref(`users/${currentPeerId}/chats/${currentUserId}`).set({ lastMessage: type === 'image' ? '[Photo]' : txt, time: Date.now() });
 
     if(!text) messageInput.value = '';
 }
@@ -358,9 +450,9 @@ voiceBtn.addEventListener('click', async () => {
             
             mediaRecorder.start();
             voiceBtn.style.color = "#ff4d4d";
-            alert("Anrejistreman kòmanse... Klike ankò pou voye.");
+            alert("Enregistrement en cours... Cliquez à nouveau pour envoyer.");
         } catch (err) {
-            alert("Pa gen aksè ak mikwofòn nan.");
+            alert("Accès au microphone refusé.");
         }
     } else {
         mediaRecorder.stop();
@@ -369,7 +461,7 @@ voiceBtn.addEventListener('click', async () => {
 });
 
 // ==========================================
-// 6. SYSTÈM APÈL (PEERJS)
+// 6. SYSTÈME D'APPEL (PEERJS)
 // ==========================================
 let peer = null;
 let currentCall = null;
@@ -392,7 +484,7 @@ auth.onAuthStateChanged((user) => {
         peer.on('call', (call) => {
             currentCall = call;
             videoModal.style.display = 'flex';
-            callStatus.innerText = `${call.peer} ap rele w...`;
+            callStatus.innerText = `${call.peer} vous appelle...`;
             answerBtn.style.display = 'flex';
             if (ringtoneSound) ringtoneSound.play().catch(e => console.log(e));
 
@@ -416,12 +508,12 @@ function startCall(isVideo) {
         localStream = stream;
         localVideo.srcObject = isVideo ? stream : null;
         videoModal.style.display = 'flex';
-        callStatus.innerText = `Ap rele ${currentPeerId}...`;
+        callStatus.innerText = `Appel de ${currentPeerId}...`;
 
         const call = peer.call(currentPeerId, stream);
         currentCall = call;
         call.on('stream', remoteStream => remoteVideo.srcObject = remoteStream);
-    }).catch(err => alert("Erè kamera/mikwo: " + err.message));
+    }).catch(err => alert("Erreur caméra/micro : " + err.message));
 }
 
 audioCallBtn.addEventListener('click', () => startCall(false));
