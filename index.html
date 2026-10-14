@@ -3,75 +3,209 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FedChat - Sekirite ak Stil</title>
+    <title>FedChat - Sekirite ak Stil Pwofesyonèl</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#00ffcc">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
+    <!-- Google Fonts & FontAwesome Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Sedgwick+Ave+Display&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Sedgwick+Ave+Display&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <link rel="stylesheet" href="style.css">
 
     <script defer src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script defer src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
     <script defer src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+    <script defer src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
 </head>
 <body>
 
     <audio id="notificationSound" src="https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3" preload="auto"></audio>
+    <audio id="ringtoneSound" src="https://assets.mixkit.co/active_storage/sfx/2813/2813-preview.mp3" loop preload="auto"></audio>
 
+    <!-- EKRAN OTANTIFIKASYON -->
     <div class="glass-container active" id="authScreen">
         <h1 class="graffiti-logo">FedChat</h1>
         
         <div id="loginForm">
             <p class="subtitle">Konekte pou w antre nan zòn nan</p>
             <div class="input-group">
+                <i class="fa-solid fa-user"></i>
                 <input type="text" id="loginId" placeholder="Antre ID ou">
             </div>
             <div class="input-group">
+                <i class="fa-solid fa-lock"></i>
                 <input type="password" id="loginPassword" placeholder="Modpas ou">
             </div>
-            <button class="btn graffiti-btn" id="loginBtn">Konekte</button>
+            <button class="btn graffiti-btn" id="loginBtn"><i class="fa-solid fa-right-to-bracket"></i> Konekte</button>
             <p class="switch-text">Ou pa gen kont? <span id="showSignup">Kreye youn</span></p>
         </div>
 
         <div id="signupForm" style="display: none;">
-            <p class="subtitle">Kreye yon ID inik pou w kòmanse</p>
+            <p class="subtitle">Kreye yon ID inik pou kòmanse</p>
             <div class="input-group">
+                <i class="fa-solid fa-user-plus"></i>
                 <input type="text" id="signupId" placeholder="Kreye yon ID">
             </div>
             <div class="input-group">
-                <input type="password" id="signupPassword" placeholder="Kreye yon Modpas">
+                <i class="fa-solid fa-lock"></i>
+                <input type="password" id="signupPassword" placeholder="Kreye yon modpas">
             </div>
-            <button class="btn graffiti-btn" id="signupBtn">Anrejistre kont lan</button>
+            <button class="btn graffiti-btn" id="signupBtn"><i class="fa-solid fa-user-check"></i> Anrejistre kont lan</button>
             <p class="switch-text">Ou gen kont deja? <span id="showLogin">Konekte la a</span></p>
         </div>
     </div>
 
+    <!-- EKRAN PRINCIPAL CHAT (STIL WHATSAPP) -->
     <div class="chat-container glass-container" id="chatScreen">
-        <div class="chat-header">
-            <div class="user-info">
-                <span class="status-dot"></span>
-                <span id="myIdDisplay" class="my-id-text">Konekte kòm: ...</span>
+        
+        <!-- SIDEBAR / LIS CHAT YO -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="user-profile">
+                    <div class="avatar-circle"><i class="fa-solid fa-user"></i></div>
+                    <span id="myIdDisplay" class="my-id-text">Konekte...</span>
+                </div>
+                <div class="sidebar-actions">
+                    <button id="newChatBtn" title="Nouvo Chat"><i class="fa-solid fa-comment-medical"></i></button>
+                    <button id="mainMenuBtn" title="Anviwònman"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                </div>
             </div>
-            <button class="btn danger-btn-sm" id="logoutBtn">Dekonekte</button>
+
+            <div class="search-chat">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="searchChatInput" placeholder="Chèche yon konvèsasyon...">
+            </div>
+
+            <div class="conversations-list" id="conversationsList">
+                <div class="no-chats-placeholder">Pa gen konvèsasyon anko. Klike sou + pou kòmanse!</div>
+            </div>
         </div>
 
-        <div class="connect-peer-box">
-            <input type="text" id="peerIdInput" placeholder="Antre ID moun ou vle pale avè l la...">
-            <button class="btn connect-btn" id="connectPeerBtn">Kòmanse Pale</button>
-        </div>
+        <!-- ZONE CHAT AKTIF -->
+        <div class="chat-main" id="chatMain">
+            <div class="chat-header">
+                <div class="active-user-back" id="backToListBtn" style="display: none;">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </div>
+                <div class="user-info">
+                    <div class="chat-avatar"><i class="fa-solid fa-user-shield"></i></div>
+                    <div>
+                        <span id="chattingWithDisplay" class="neon-text">Chwazi yon chat</span>
+                        <span id="friendStatusDisplay" class="friend-status">offline</span>
+                    </div>
+                </div>
 
-        <div class="active-chat-info" id="activeChatInfo" style="display: none;">
-            Ap pale ak: <span id="chattingWithDisplay" class="neon-text">...</span>
-        </div>
+                <div class="chat-header-actions" id="callBtnContainer" style="display:none;">
+                    <button class="header-action-btn" id="audioCallBtn" title="Apèl Odyo"><i class="fa-solid fa-phone"></i></button>
+                    <button class="header-action-btn" id="videoCallBtn" title="Apèl Videyo"><i class="fa-solid fa-video"></i></button>
+                    <button class="header-action-btn" id="chatMenuToggleBtn" title="Opsyon"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                </div>
+            </div>
 
-        <div class="messages-area" id="messagesArea">
-            <div class="system-message">Antre yon ID anlè a pou w kòmanse yon konvèsasyon sekirize.</div>
-        </div>
+            <!-- MODAL MENI SETTINGS -->
+            <div class="dropdown-menu" id="dropdownMenu">
+                <button id="themeBtn"><i class="fa-solid fa-palette"></i> Chanje Tèm</button>
+                <button id="privacyBtn"><i class="fa-solid fa-user-shield"></i> Konfidansyalite</button>
+                <hr>
+                <div class="menu-setting">
+                    <label for="soundToggle"><i class="fa-solid fa-volume-high"></i> Aktive Son</label>
+                    <input type="checkbox" id="soundToggle" checked>
+                </div>
+                <div class="menu-setting">
+                    <select id="soundSelect">
+                        <option value="https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3">Son 1 (Defo)</option>
+                        <option value="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3">Son 2 (Kout)</option>
+                    </select>
+                </div>
+                <hr>
+                <button id="logoutBtn" style="color: #ff4d4d;"><i class="fa-solid fa-right-from-bracket"></i> Dekonekte</button>
+            </div>
 
-        <div class="input-area">
-            <input type="text" id="messageInput" placeholder="Ekri mesaj ou a..." disabled>
-            <button class="btn send-btn" id="sendBtn" disabled>Voye</button>
+            <!-- MODAL APÈL VIDEO/ODYO -->
+            <div id="videoModal" style="display: none;">
+                <video id="remoteVideo" autoplay playsinline></video>
+                <video id="localVideo" autoplay muted playsinline></video>
+
+                <div class="call-top-info">
+                    <div id="callStatus">Apèl ap chaje...</div>
+                    <div id="callTimer" style="display: none;">00:00</div>
+                </div>
+
+                <div class="call-controls">
+                    <button id="muteAudioBtn" class="call-ctrl-btn"><i class="fa-solid fa-microphone"></i></button>
+                    <button id="toggleVideoBtn" class="call-ctrl-btn"><i class="fa-solid fa-camera"></i></button>
+                    <button id="shareScreenBtn" class="call-ctrl-btn"><i class="fa-solid fa-desktop"></i></button>
+                    <button id="answerBtn" class="call-ctrl-btn answer" style="display: none;"><i class="fa-solid fa-phone"></i></button>
+                    <button id="hangupBtn" class="call-ctrl-btn hangup"><i class="fa-solid fa-phone-slash"></i></button>
+                </div>
+            </div>
+
+            <!-- MODAL NOUVO CHAT -->
+            <div id="newChatModal" class="custom-modal" style="display: none;">
+                <div class="modal-content">
+                    <h3><i class="fa-solid fa-user-plus"></i> Nouvo Konvèsasyon</h3>
+                    <input type="text" id="peerIdInput" placeholder="Antre ID zanmi w lan...">
+                    <div class="modal-buttons">
+                        <button class="btn" id="cancelNewChat">Anile</button>
+                        <button class="btn connect-btn" id="connectPeerBtn">Kòmanse Pale</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MODAL KONFIDANSYALITE -->
+            <div id="privacyModal" class="custom-modal" style="display: none;">
+                <div class="modal-content">
+                    <h3><i class="fa-solid fa-shield-halved"></i> Paramèt Konfidansyalite</h3>
+                    <div class="privacy-option">
+                        <label>Pataje estati an liy (Online Status)</label>
+                        <input type="checkbox" id="shareOnlineToggle" checked>
+                    </div>
+                    <div class="privacy-option">
+                        <label>Konfimasyon pou lè w li mesaj (Read Receipts)</label>
+                        <input type="checkbox" id="readReceiptsToggle" checked>
+                    </div>
+                    <button class="btn graffiti-btn" id="closePrivacyBtn">Fèmen</button>
+                </div>
+            </div>
+
+            <!-- MODAL STICKERS -->
+            <div id="stickerPicker" class="sticker-picker" style="display: none;">
+                <div class="sticker-grid">
+                    <span class="sticker-item">🔥</span>
+                    <span class="sticker-item">🚀</span>
+                    <span class="sticker-item">😎</span>
+                    <span class="sticker-item">🎉</span>
+                    <span class="sticker-item">❤️</span>
+                    <span class="sticker-item">👍</span>
+                    <span class="sticker-item">👑</span>
+                    <span class="sticker-item">💡</span>
+                </div>
+            </div>
+
+            <div class="messages-area" id="messagesArea">
+                <div class="system-message"><i class="fa-solid fa-lock"></i> Mesaj ou yo chifre nan bout an bout. Chwazi yon konvèsasyon pou kòmanse.</div>
+            </div>
+
+            <!-- TYPING INDICATOR -->
+            <div id="typingIndicator" class="typing-indicator" style="display: none;">
+                <span></span><span></span><span></span> <em>Zanmi w ap ekri...</em>
+            </div>
+
+            <!-- INPUT AREA -->
+            <div class="input-area">
+                <input type="file" id="imageInput" accept="image/*" style="display: none;">
+                <button class="icon-btn" id="attachBtn" title="Voye Foto"><i class="fa-solid fa-image"></i></button>
+                <button class="icon-btn" id="stickerBtn" title="Stickers"><i class="fa-solid fa-face-smile"></i></button>
+                <button class="icon-btn" id="voiceBtn" title="Voye Vwa"><i class="fa-solid fa-microphone"></i></button>
+                
+                <input type="text" id="messageInput" placeholder="Ekri mesaj ou a..." disabled>
+                <button class="btn send-btn" id="sendBtn" disabled><i class="fa-solid fa-paper-plane"></i></button>
+            </div>
         </div>
     </div>
 
