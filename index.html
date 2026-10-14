@@ -27,7 +27,7 @@
     <audio id="notificationSound" src="https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3" preload="auto"></audio>
     <audio id="ringtoneSound" src="https://assets.mixkit.co/active_storage/sfx/2813/2813-preview.mp3" loop preload="auto"></audio>
 
-    <!-- EKRAN OTANTIFIKASYON (SÈLMAN LÈ W PA KONEKTE) -->
+    <!-- EKRAN OTANTIFIKASYON -->
     <div class="glass-container active" id="authScreen">
         <div class="auth-box">
             <h1 class="graffiti-logo">FedChat</h1>
@@ -47,10 +47,14 @@
             </div>
 
             <div id="signupForm" style="display: none;">
-                <p class="subtitle">Kreye yon ID inik pou kòmanse</p>
+                <p class="subtitle">Kreye yon kont anrejistre</p>
+                <div class="input-group">
+                    <i class="fa-solid id-card"></i>
+                    <input type="text" id="signupName" placeholder="Non konplè ou (pa egzanp: Jean Pierre)">
+                </div>
                 <div class="input-group">
                     <i class="fa-solid fa-user-plus"></i>
-                    <input type="text" id="signupId" placeholder="Kreye yon ID">
+                    <input type="text" id="signupId" placeholder="Kreye yon ID inik">
                 </div>
                 <div class="input-group">
                     <i class="fa-solid fa-lock"></i>
@@ -62,7 +66,7 @@
         </div>
     </div>
 
-    <!-- EKRAN PRINCIPAL CHAT (PRAN 100% TOUT EKRAN AN LÈ W KONEKTE) -->
+    <!-- EKRAN PRINCIPAL CHAT (CADRÉ STYLE APP WEB) -->
     <div class="glass-container" id="chatScreen">
         
         <!-- SIDEBAR / LIS CHAT YO -->
@@ -70,7 +74,10 @@
             <div class="sidebar-header">
                 <div class="user-profile">
                     <div class="avatar-circle"><i class="fa-solid fa-user"></i></div>
-                    <span id="myIdDisplay" class="my-id-text">Konekte...</span>
+                    <div>
+                        <span id="myNameDisplay" class="my-name-text">Non...</span>
+                        <span id="myIdDisplay" class="my-id-text">@id</span>
+                    </div>
                 </div>
                 <div class="sidebar-actions">
                     <button id="newChatBtn" title="Nouvo Chat"><i class="fa-solid fa-comment-medical"></i></button>
@@ -84,7 +91,7 @@
             </div>
 
             <div class="conversations-list" id="conversationsList">
-                <div class="no-chats-placeholder">Pa gen konvèsasyon anko. Klike sou + pou kòmanse!</div>
+                <div class="no-chats-placeholder">Pa gen konvèsasyon ankò. Klike sou + pou kòmanse!</div>
             </div>
         </div>
 
