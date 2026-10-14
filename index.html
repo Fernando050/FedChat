@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FedChat - Pwofesyonèl</title>
+    <title>FedChat - Sekirite ak Stil Pwofesyonèl</title>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#00ffcc">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -27,57 +27,48 @@
     <audio id="notificationSound" src="https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3" preload="auto"></audio>
     <audio id="ringtoneSound" src="https://assets.mixkit.co/active_storage/sfx/2813/2813-preview.mp3" loop preload="auto"></audio>
 
-    <!-- EKRAN OTANTIFIKASYON -->
+    <!-- EKRAN OTANTIFIKASYON (Sèl sa ki parèt an premye) -->
     <div class="glass-container active" id="authScreen">
-        <div class="auth-box">
-            <h1 class="graffiti-logo">FedChat</h1>
-            
-            <div id="loginForm">
-                <p class="subtitle">Konekte pou w antre nan zòn nan</p>
-                <div class="input-group">
-                    <i class="fa-solid fa-user"></i>
-                    <input type="text" id="loginId" placeholder="Antre ID ou">
-                </div>
-                <div class="input-group">
-                    <i class="fa-solid fa-lock"></i>
-                    <input type="password" id="loginPassword" placeholder="Modpas ou">
-                </div>
-                <button class="btn graffiti-btn" id="loginBtn"><i class="fa-solid fa-right-to-bracket"></i> Konekte</button>
-                <p class="switch-text">Ou pa gen kont? <span id="showSignup">Kreye youn</span></p>
+        <h1 class="graffiti-logo">FedChat</h1>
+        
+        <div id="loginForm">
+            <p class="subtitle">Konekte pou w antre nan zòn nan</p>
+            <div class="input-group">
+                <i class="fa-solid fa-user"></i>
+                <input type="text" id="loginId" placeholder="Antre ID ou">
             </div>
+            <div class="input-group">
+                <i class="fa-solid fa-lock"></i>
+                <input type="password" id="loginPassword" placeholder="Modpas ou">
+            </div>
+            <button class="btn graffiti-btn" id="loginBtn"><i class="fa-solid fa-right-to-bracket"></i> Konekte</button>
+            <p class="switch-text">Ou pa gen kont? <span id="showSignup">Kreye youn</span></p>
+        </div>
 
-            <div id="signupForm" style="display: none;">
-                <p class="subtitle">Kreye yon kont anrejistre</p>
-                <div class="input-group">
-                    <i class="fa-solid id-card"></i>
-                    <input type="text" id="signupName" placeholder="Non konplè ou (pa egzanp: Jean Pierre)">
-                </div>
-                <div class="input-group">
-                    <i class="fa-solid fa-user-plus"></i>
-                    <input type="text" id="signupId" placeholder="Kreye yon ID inik">
-                </div>
-                <div class="input-group">
-                    <i class="fa-solid fa-lock"></i>
-                    <input type="password" id="signupPassword" placeholder="Kreye yon modpas">
-                </div>
-                <button class="btn graffiti-btn" id="signupBtn"><i class="fa-solid fa-user-check"></i> Anrejistre kont lan</button>
-                <p class="switch-text">Ou gen kont deja? <span id="showLogin">Konekte la a</span></p>
+        <div id="signupForm" style="display: none;">
+            <p class="subtitle">Kreye yon ID inik pou kòmanse</p>
+            <div class="input-group">
+                <i class="fa-solid fa-user-plus"></i>
+                <input type="text" id="signupId" placeholder="Kreye yon ID">
             </div>
+            <div class="input-group">
+                <i class="fa-solid fa-lock"></i>
+                <input type="password" id="signupPassword" placeholder="Kreye yon modpas">
+            </div>
+            <button class="btn graffiti-btn" id="signupBtn"><i class="fa-solid fa-user-check"></i> Anrejistre kont lan</button>
+            <p class="switch-text">Ou gen kont deja? <span id="showLogin">Konekte la a</span></p>
         </div>
     </div>
 
-    <!-- EKRAN PRINCIPAL CHAT (CADRÉ STYLE APP WEB) -->
-    <div class="glass-container" id="chatScreen">
+    <!-- EKRAN PRINCIPAL CHAT (Kache nèt toutotan itilizatè a pa konekte) -->
+    <div class="chat-container glass-container" id="chatScreen">
         
-        <!-- SIDEBAR / LIS CHAT YO -->
+        <!-- SIDEBAR / LIS CHAT -->
         <div class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <div class="user-profile">
                     <div class="avatar-circle"><i class="fa-solid fa-user"></i></div>
-                    <div>
-                        <span id="myNameDisplay" class="my-name-text">Non...</span>
-                        <span id="myIdDisplay" class="my-id-text">@id</span>
-                    </div>
+                    <span id="myIdDisplay" class="my-id-text">Konekte...</span>
                 </div>
                 <div class="sidebar-actions">
                     <button id="newChatBtn" title="Nouvo Chat"><i class="fa-solid fa-comment-medical"></i></button>
@@ -91,7 +82,7 @@
             </div>
 
             <div class="conversations-list" id="conversationsList">
-                <div class="no-chats-placeholder">Pa gen konvèsasyon ankò. Klike sou + pou kòmanse!</div>
+                <div class="no-chats-placeholder">Pa gen konvèsasyon anko. Klike sou + pou kòmanse!</div>
             </div>
         </div>
 
@@ -115,7 +106,7 @@
                 </div>
             </div>
 
-            <!-- DROPDOWN MENU -->
+            <!-- MENI DÉROULANT SETTINGS -->
             <div class="dropdown-menu" id="dropdownMenu">
                 <button id="themeBtn"><i class="fa-solid fa-palette"></i> Chanje Tèm</button>
                 <button id="privacyBtn"><i class="fa-solid fa-user-shield"></i> Konfidansyalite</button>
