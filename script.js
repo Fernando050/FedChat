@@ -87,6 +87,8 @@ auth.onAuthStateChanged((user) => {
     if (user) {
         currentUserId = user.email.split('@')[0];
         document.getElementById('myIdDisplay').innerText = currentUserId;
+        
+        // Kache ekran otantikasyon an nèt, epi afiche chat la sou 100% ekran an
         authScreen.classList.remove('active');
         chatScreen.classList.add('active');
         
@@ -95,6 +97,8 @@ auth.onAuthStateChanged((user) => {
     } else {
         currentUserId = null;
         currentPeerId = null;
+        
+        // Kache chat la epi afiche ekran otantikasyon an
         chatScreen.classList.remove('active');
         authScreen.classList.add('active');
     }
@@ -143,7 +147,7 @@ document.getElementById('logoutBtn').addEventListener('click', () => {
 });
 
 // ==========================================
-// 3. MENU & NAVIGATION (WHATSAPP STYLE)
+// 3. MENU & NAVIGATION
 // ==========================================
 mainMenuBtn.addEventListener('click', (e) => {
     e.stopPropagation();
@@ -181,7 +185,7 @@ function loadConversations() {
         conversationsList.innerHTML = '';
         const chats = snapshot.val();
         if (!chats) {
-            conversationsList.innerHTML = '<div class="no-chats-placeholder">Pa gen konvèsasyon anko.</div>';
+            conversationsList.innerHTML = '<div class="no-chats-placeholder">Pa gen konvèsasyon ankò.</div>';
             return;
         }
 
@@ -215,17 +219,16 @@ function openChat(peerId) {
         backToListBtn.style.display = 'block';
     }
 
-    // Swiv estati zanmi an
     db.ref(`users/${peerId}/status`).on('value', (snap) => {
         const status = snap.val();
-        friendStatusDisplay.innerText = status === 'online' ? 'An liy (online)' : 'An offline';
+        friendStatusDisplay.innerText = status === 'online' ? 'An liy (online)' : 'Offline';
     });
 
     loadMessages();
 }
 
 // ==========================================
-// 5. MESSAGERIE (FOTO, STICKERS, VOICE, READ RECEIPTS)
+// 5. MESSAGERIE (FOTO, STICKERS, VWA)
 // ==========================================
 function loadMessages() {
     const chatId = [currentUserId, currentPeerId].sort().join('_');
@@ -240,7 +243,6 @@ function loadMessages() {
         const msgKey = snapshot.key;
         const isMe = msg.sender === currentUserId;
 
-        // Make read if received
         if (!isMe && readReceipts && msg.status !== 'read') {
             db.ref(`chats/${chatId}/messages/${msgKey}`).update({ status: 'read' });
         }
@@ -269,14 +271,12 @@ function loadMessages() {
         }
     });
 
-    // Lè yon lòt moun ap ekri
     typingRef = db.ref(`chats/${chatId}/typing/${currentPeerId}`);
     typingRef.on('value', (snap) => {
         typingIndicator.style.display = snap.val() ? 'flex' : 'none';
     });
 }
 
-// Typing Event
 let typingTimer;
 messageInput.addEventListener('input', () => {
     if (!currentPeerId) return;
@@ -289,7 +289,7 @@ messageInput.addEventListener('input', () => {
     }, 1500);
 });
 
-sendBtn.addEventListener('click', sendMessage);
+sendBtn.addEventListener('click', () => sendMessage());
 messageInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') sendMessage(); });
 
 function sendMessage(text = null, type = 'text') {
@@ -307,14 +307,12 @@ function sendMessage(text = null, type = 'text') {
         timestamp: firebase.database.ServerValue.TIMESTAMP
     });
 
-    // Mizajou lis konvèsasyon pou tou de itilizatè yo
     db.ref(`users/${currentUserId}/chats/${currentPeerId}`).set({ lastMessage: type === 'image' ? '[Foto]' : txt, time: Date.now() });
     db.ref(`users/${currentPeerId}/chats/${currentUserId}`).set({ lastMessage: type === 'image' ? '[Foto]' : txt, time: Date.now() });
 
     if(!text) messageInput.value = '';
 }
 
-// Pataje Foto
 attachBtn.addEventListener('click', () => imageInput.click());
 imageInput.addEventListener('change', (e) => {
     const file = e.target.files[0];
@@ -326,7 +324,6 @@ imageInput.addEventListener('change', (e) => {
     reader.readAsDataURL(file);
 });
 
-// Stickers
 stickerBtn.addEventListener('click', () => {
     stickerPicker.style.display = stickerPicker.style.display === 'block' ? 'none' : 'block';
 });
@@ -337,7 +334,6 @@ document.querySelectorAll('.sticker-item').forEach(item => {
     });
 });
 
-// Anrejistreman vwa (Voice Notes)
 let mediaRecorder;
 let audioChunks = [];
 voiceBtn.addEventListener('click', async () => {
@@ -369,9 +365,8 @@ voiceBtn.addEventListener('click', async () => {
     }
 });
 
-
 // ==========================================
-// 6. SYSTÈM APÈL (PEERJS)
+// 6. APÈL (PEERJS)
 // ==========================================
 let peer = null;
 let currentCall = null;
