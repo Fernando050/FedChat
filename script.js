@@ -167,6 +167,7 @@ connectPeerBtn.addEventListener('click', () => {
     openChat(currentPeerId);
 });
 
+// Bouton pou retounen sou lis konvèsasyon an sou telefòn
 backToListBtn.addEventListener('click', () => {
     sidebar.classList.remove('hidden-mobile');
     chatMain.classList.add('hidden-mobile');
@@ -209,10 +210,10 @@ function openChat(peerId) {
     messageInput.disabled = false;
     sendBtn.disabled = false;
     
+    // Sou telefòn, kache sidebar epi montre chat-main
     if (window.innerWidth <= 768) {
         sidebar.classList.add('hidden-mobile');
         chatMain.classList.remove('hidden-mobile');
-        backToListBtn.style.display = 'block';
     }
 
     db.ref(`users/${peerId}/status`).on('value', (snap) => {
@@ -285,7 +286,6 @@ messageInput.addEventListener('input', () => {
     }, 1500);
 });
 
-// Jere touche Enter pou voye, ak Shift + Enter pou sote liy
 messageInput.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
         e.preventDefault();
