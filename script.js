@@ -17,13 +17,6 @@ if (!firebase.apps.length) {
 const auth = firebase.auth();
 const db = firebase.database();
 
-// PWA Service Worker
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW error:', err));
-    });
-}
-
 // Dom Elements
 const authScreen = document.getElementById('authScreen');
 const chatScreen = document.getElementById('chatScreen');
@@ -81,14 +74,19 @@ shareOnlineToggle.checked = shareOnline;
 readReceiptsToggle.checked = readReceipts;
 
 // ==========================================
-// 2. AUTHENTIFICATION & PRÉSENCE (ONLINE)
+// 2. AUTHENTIFICATION & PROFILE (NOM & ID)
 // ==========================================
 auth.onAuthStateChanged((user) => {
     if (user) {
         currentUserId = user.email.split('@')[0];
-        document.getElementById('myIdDisplay').innerText = currentUserId;
+        document.getElementById('myIdDisplay').innerText = `@${currentUserId}`;
         
-        // Kache ekran otantikasyon an nèt, epi afiche chat la sou 100% ekran an
+        // Chache non itilizatè a nan baz done a
+        db.ref(`users/${currentUserId}/name`).once('value').then((snap) => {
+            const userName = snap.val() || currentUserId;
+            document.getElementById('myNameDisplay').innerText = userName;
+        });
+
         authScreen.classList.remove('active');
         chatScreen.classList.add('active');
         
@@ -97,8 +95,6 @@ auth.onAuthStateChanged((user) => {
     } else {
         currentUserId = null;
         currentPeerId = null;
-        
-        // Kache chat la epi afiche ekran otantikasyon an
         chatScreen.classList.remove('active');
         authScreen.classList.add('active');
     }
@@ -125,11 +121,20 @@ document.getElementById('showLogin').addEventListener('click', () => {
 });
 
 document.getElementById('signupBtn').addEventListener('click', () => {
+    const name = document.getElementById('signupName').value.trim();
     const id = document.getElementById('signupId').value.trim().toLowerCase();
     const pass = document.getElementById('signupPassword').value;
-    if(!id || pass.length < 6) return alert("Antre yon ID ak yon modpas (omwen 6 karaktè).");
+    
+    if(!name || !id || pass.length < 6) {
+        return alert("Tanpri antre non ou, yon ID, ak yon modpas (omwen 6 karaktè).");
+    }
+    
     auth.createUserWithEmailAndPassword(`${id}@fedchat.com`, pass)
-        .then(() => alert("Kont kreye avèk siksè!"))
+        .then((cred) => {
+            // Sove non itilizatè a nan baz done a
+            db.ref(`users/${id}/name`).set(name);
+            alert("Kont kreye avèk siksè!");
+        })
         .catch(err => alert("Erè : " + err.message));
 });
 
@@ -191,24 +196,33 @@ function loadConversations() {
 
         Object.keys(chats).forEach(peerId => {
             const chatData = chats[peerId];
-            const div = document.createElement('div');
-            div.className = `conv-item ${currentPeerId === peerId ? 'active' : ''}`;
-            div.innerHTML = `
-                <div class="avatar-circle"><i class="fa-solid fa-user"></i></div>
-                <div class="conv-info">
-                    <div class="conv-name">${peerId}</div>
-                    <div class="conv-last-msg">${chatData.lastMessage || 'Klike pou w pale'}</div>
-                </div>
-            `;
-            div.addEventListener('click', () => openChat(peerId));
-            conversationsList.appendChild(div);
+            
+            // Chache non zanmi an
+            db.ref(`users/${peerId}/name`).once('value').then((snap) => {
+                const friendName = snap.val() || peerId;
+                const div = document.createElement('div');
+                div.className = `conv-item ${currentPeerId === peerId ? 'active' : ''}`;
+                div.innerHTML = `
+                    <div class="avatar-circle"><i class="fa-solid fa-user"></i></div>
+                    <div class="conv-info">
+                        <div class="conv-name">${friendName}</div>
+                        <div class="conv-last-msg">${chatData.lastMessage || 'Klike pou w pale'}</div>
+                    </div>
+                `;
+                div.addEventListener('click', () => openChat(peerId));
+                conversationsList.appendChild(div);
+            });
         });
     });
 }
 
 function openChat(peerId) {
     currentPeerId = peerId;
-    chattingWithDisplay.innerText = currentPeerId;
+    
+    db.ref(`users/${peerId}/name`).once('value').then((snap) => {
+        chattingWithDisplay.innerText = snap.val() || peerId;
+    });
+
     callBtnContainer.style.display = 'flex';
     messageInput.disabled = false;
     sendBtn.disabled = false;
