@@ -224,7 +224,7 @@ function openChat(peerId) {
 }
 
 // ==========================================
-// 5. MESSAGERIE (FOTO, STICKERS, VOICE, READ RECEIPTS)
+// 5. MESSAGERIE (FOTO, STICKERS, VOICE, MULTILINE)
 // ==========================================
 function loadMessages() {
     const chatId = [currentUserId, currentPeerId].sort().join('_');
@@ -285,8 +285,15 @@ messageInput.addEventListener('input', () => {
     }, 1500);
 });
 
-sendBtn.addEventListener('click', sendMessage);
-messageInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') sendMessage(); });
+// Jere touche Enter pou voye, ak Shift + Enter pou sote liy
+messageInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+    }
+});
+
+sendBtn.addEventListener('click', () => sendMessage());
 
 function sendMessage(text = null, type = 'text') {
     const txt = text || messageInput.value.trim();
