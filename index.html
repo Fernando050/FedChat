@@ -85,7 +85,7 @@
             </div>
         </div>
 
-        <!-- ZONE CHAT AKTIF (Ajoute hidden-mobile pa defo pou telefòn) -->
+        <!-- ZONE CHAT AKTIF -->
         <div class="chat-main hidden-mobile" id="chatMain">
             <div class="chat-header">
                 <div class="user-info">
@@ -102,86 +102,6 @@
                 <div class="chat-header-actions" id="callBtnContainer" style="display:none;">
                     <button class="header-action-btn" id="audioCallBtn" title="Apèl Odyo"><i class="fa-solid fa-phone"></i></button>
                     <button class="header-action-btn" id="videoCallBtn" title="Apèl Videyo"><i class="fa-solid fa-video"></i></button>
-                </div>
-            </div>
-
-            <!-- MENI DÉROULANT SETTINGS -->
-            <div class="dropdown-menu" id="dropdownMenu">
-                <button id="themeBtn"><i class="fa-solid fa-palette"></i> Chanje Tèm</button>
-                <button id="privacyBtn"><i class="fa-solid fa-user-shield"></i> Konfidansyalite</button>
-                <hr>
-                <div class="menu-setting">
-                    <label for="soundToggle"><i class="fa-solid fa-volume-high"></i> Aktive Son</label>
-                    <input type="checkbox" id="soundToggle" checked>
-                </div>
-                <div class="menu-setting">
-                    <select id="soundSelect">
-                        <option value="https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3">Son 1 (Defo)</option>
-                        <option value="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3">Son 2 (Kout)</option>
-                    </select>
-                </div>
-                <hr>
-                <button id="logoutBtn" style="color: #ff4d4d;"><i class="fa-solid fa-right-from-bracket"></i> Dekonekte</button>
-            </div>
-
-            <!-- MODAL APÈL VIDEO/ODYO -->
-            <div id="videoModal" style="display: none;">
-                <video id="remoteVideo" autoplay playsinline></video>
-                <video id="localVideo" autoplay muted playsinline></video>
-
-                <div class="call-top-info">
-                    <div id="callStatus">Apèl ap chaje...</div>
-                    <div id="callTimer" style="display: none;">00:00</div>
-                </div>
-
-                <div class="call-controls">
-                    <button id="muteAudioBtn" class="call-ctrl-btn"><i class="fa-solid fa-microphone"></i></button>
-                    <button id="toggleVideoBtn" class="call-ctrl-btn"><i class="fa-solid fa-camera"></i></button>
-                    <button id="shareScreenBtn" class="call-ctrl-btn"><i class="fa-solid fa-desktop"></i></button>
-                    <button id="answerBtn" class="call-ctrl-btn answer" style="display: none;"><i class="fa-solid fa-phone"></i></button>
-                    <button id="hangupBtn" class="call-ctrl-btn hangup"><i class="fa-solid fa-phone-slash"></i></button>
-                </div>
-            </div>
-
-            <!-- MODAL NOUVO CHAT -->
-            <div id="newChatModal" class="custom-modal" style="display: none;">
-                <div class="modal-content">
-                    <h3><i class="fa-solid fa-user-plus"></i> Nouvo Konvèsasyon</h3>
-                    <input type="text" id="peerIdInput" placeholder="Antre ID zanmi w lan...">
-                    <div class="modal-buttons">
-                        <button class="btn" id="cancelNewChat">Anile</button>
-                        <button class="btn connect-btn" id="connectPeerBtn">Kòmanse Pale</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- MODAL KONFIDANSYALITE -->
-            <div id="privacyModal" class="custom-modal" style="display: none;">
-                <div class="modal-content">
-                    <h3><i class="fa-solid fa-shield-halved"></i> Paramèt Konfidansyalite</h3>
-                    <div class="privacy-option">
-                        <label>Pataje estati an liy (Online Status)</label>
-                        <input type="checkbox" id="shareOnlineToggle" checked>
-                    </div>
-                    <div class="privacy-option">
-                        <label>Konfimasyon pou lè w li mesaj (Read Receipts)</label>
-                        <input type="checkbox" id="readReceiptsToggle" checked>
-                    </div>
-                    <button class="btn graffiti-btn" id="closePrivacyBtn">Fèmen</button>
-                </div>
-            </div>
-
-            <!-- MODAL STICKERS -->
-            <div id="stickerPicker" class="sticker-picker" style="display: none;">
-                <div class="sticker-grid">
-                    <span class="sticker-item">🔥</span>
-                    <span class="sticker-item">🚀</span>
-                    <span class="sticker-item">😎</span>
-                    <span class="sticker-item">🎉</span>
-                    <span class="sticker-item">❤️</span>
-                    <span class="sticker-item">👍</span>
-                    <span class="sticker-item">👑</span>
-                    <span class="sticker-item">💡</span>
                 </div>
             </div>
 
@@ -205,6 +125,91 @@
                 <button class="btn send-btn" id="sendBtn" disabled><i class="fa-solid fa-paper-plane"></i></button>
             </div>
         </div>
+
+        <!-- GLOBAL MENIS AK MODALS (DEPLAse ISIT LA POU YO PA JANM BLOKE) -->
+        <div class="dropdown-menu" id="dropdownMenu">
+            <button id="themeBtn"><i class="fa-solid fa-palette"></i> Chanje Tèm</button>
+            <button id="privacyBtn"><i class="fa-solid fa-user-shield"></i> Konfidansyalite</button>
+            <hr>
+            <div class="menu-setting">
+                <label for="soundToggle"><i class="fa-solid fa-volume-high"></i> Aktive Son</label>
+                <input type="checkbox" id="soundToggle" checked>
+            </div>
+            <div class="menu-setting">
+                <select id="soundSelect">
+                    <option value="https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3">Son 1 (Defo)</option>
+                    <option value="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3">Son 2 (Kout)</option>
+                </select>
+            </div>
+            <hr>
+            <button id="logoutBtn" style="color: #ff4d4d;"><i class="fa-solid fa-right-from-bracket"></i> Dekonekte</button>
+        </div>
+
+        <!-- MODAL NOUVO CHAT -->
+        <div id="newChatModal" class="custom-modal" style="display: none;">
+            <div class="modal-content">
+                <h3><i class="fa-solid fa-user-plus"></i> Nouvo Konvèsasyon</h3>
+                <input type="text" id="peerIdInput" placeholder="Antre ID zanmi w lan...">
+                <div class="modal-buttons">
+                    <button class="btn" id="cancelNewChat">Anile</button>
+                    <button class="btn connect-btn" id="connectPeerBtn">Kòmanse Pale</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL KONFIDANSYALITE -->
+        <div id="privacyModal" class="custom-modal" style="display: none;">
+            <div class="modal-content">
+                <h3><i class="fa-solid fa-shield-halved"></i> Paramèt Konfidansyalite</h3>
+                <div class="privacy-option">
+                    <label>Pataje estati an liy (Online Status)</label>
+                    <input type="checkbox" id="shareOnlineToggle" checked>
+                </div>
+                <div class="privacy-option">
+                    <label>Konfimasyon pou lè w li mesaj (Read Receipts)</label>
+                    <input type="checkbox" id="readReceiptsToggle" checked>
+                </div>
+                <button class="btn graffiti-btn" id="closePrivacyBtn">Fèmen</button>
+            </div>
+        </div>
+
+        <!-- MODAL STICKERS -->
+        <div id="stickerPicker" class="sticker-picker" style="display: none;">
+            <div class="sticker-grid">
+                <span class="sticker-item">🔥</span>
+                <span class="sticker-item">🚀</span>
+                <span class="sticker-item">😎</span>
+                <span class="sticker-item">🎉</span>
+                <span class="sticker-item">❤️</span>
+                <span class="sticker-item">👍</span>
+                <span class="sticker-item">👑</span>
+                <span class="sticker-item">💡</span>
+                <span class="sticker-item">😂</span>
+                <span class="sticker-item">🤣</span>
+                <span class="sticker-item">😍</span>
+                <span class="sticker-item">🤪</span>
+            </div>
+        </div>
+
+        <!-- MODAL APÈL VIDEO/ODYO -->
+        <div id="videoModal" style="display: none;">
+            <video id="remoteVideo" autoplay playsinline></video>
+            <video id="localVideo" autoplay muted playsinline></video>
+
+            <div class="call-top-info">
+                <div id="callStatus">Apèl ap chaje...</div>
+                <div id="callTimer" style="display: none;">00:00</div>
+            </div>
+
+            <div class="call-controls">
+                <button id="muteAudioBtn" class="call-ctrl-btn"><i class="fa-solid fa-microphone"></i></button>
+                <button id="toggleVideoBtn" class="call-ctrl-btn"><i class="fa-solid fa-camera"></i></button>
+                <button id="shareScreenBtn" class="call-ctrl-btn"><i class="fa-solid fa-desktop"></i></button>
+                <button id="answerBtn" class="call-ctrl-btn answer" style="display: none;"><i class="fa-solid fa-phone"></i></button>
+                <button id="hangupBtn" class="call-ctrl-btn hangup"><i class="fa-solid fa-phone-slash"></i></button>
+            </div>
+        </div>
+
     </div>
 
     <script defer src="script.js"></script>
