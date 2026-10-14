@@ -27,7 +27,7 @@ body.light-theme .glass-container {
     border: 1px solid rgba(0, 0, 0, 0.1);
     box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15);
 }
-body.light-theme input {
+body.light-theme input, body.light-theme textarea {
     background: rgba(0, 0, 0, 0.05);
     color: #333;
     border: 1px solid #ccc;
@@ -38,7 +38,7 @@ body.light-theme .msg-received { background: rgba(0, 0, 0, 0.08); color: #333; }
 body.light-theme .dropdown-menu { background: #ffffff; box-shadow: 0 5px 25px rgba(0,0,0,0.15); }
 body.light-theme .dropdown-menu button { color: #333; }
 
-/* GLASSMORPHISM DE BAZ (Kache nèt pa defo) */
+/* GLASSMORPHISM DE BAZ */
 .glass-container {
     background: rgba(15, 12, 41, 0.75);
     backdrop-filter: blur(20px);
@@ -49,7 +49,6 @@ body.light-theme .dropdown-menu button { color: #333; }
     display: none !important;
 }
 
-/* Parèt sèlman lè l gen klas active an */
 .glass-container.active {
     display: flex !important;
 }
@@ -144,7 +143,7 @@ body.light-theme .dropdown-menu button { color: #333; }
     font-weight: 600;
 }
 
-/* CHAT APP CONTAINER (WHATSAPP LAYOUT POU LAPTOP & TABLET) */
+/* CHAT APP CONTAINER */
 .chat-container.glass-container.active {
     width: 95%;
     max-width: 1250px;
@@ -163,6 +162,7 @@ body.light-theme .dropdown-menu button { color: #333; }
     display: flex;
     flex-direction: column;
     background: rgba(0, 0, 0, 0.2);
+    min-height: 0;
 }
 
 .sidebar-header {
@@ -243,6 +243,7 @@ body.light-theme .dropdown-menu button { color: #333; }
 .conversations-list {
     flex-grow: 1;
     overflow-y: auto;
+    min-height: 0;
 }
 
 .no-chats-placeholder {
@@ -292,6 +293,7 @@ body.light-theme .dropdown-menu button { color: #333; }
     position: relative;
     background: rgba(0, 0, 0, 0.1);
     overflow: hidden;
+    min-height: 0;
 }
 
 .chat-header {
@@ -404,6 +406,7 @@ body.light-theme .dropdown-menu button { color: #333; }
     display: flex;
     flex-direction: column;
     gap: 12px;
+    min-height: 0;
 }
 
 .system-message {
@@ -422,6 +425,7 @@ body.light-theme .dropdown-menu button { color: #333; }
     position: relative;
     word-wrap: break-word;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    white-space: pre-wrap; /* Pèmèt liy yo sote kòrèkteman jan itilizatè a ekri l la */
 }
 
 .msg-sent {
@@ -469,7 +473,7 @@ body.light-theme .dropdown-menu button { color: #333; }
     gap: 5px;
 }
 
-/* INPUT AREA */
+/* INPUT AREA (TEXTAREA STYLE) */
 .input-area {
     padding: 12px 20px;
     background: rgba(0, 0, 0, 0.3);
@@ -477,6 +481,7 @@ body.light-theme .dropdown-menu button { color: #333; }
     align-items: center;
     gap: 10px;
     border-top: 1px solid rgba(255, 255, 255, 0.05);
+    flex-shrink: 0;
 }
 
 .icon-btn {
@@ -491,14 +496,25 @@ body.light-theme .dropdown-menu button { color: #333; }
 
 .icon-btn:hover { color: #00ffcc; }
 
-.input-area input[type="text"] {
+.input-area textarea {
     flex-grow: 1;
-    padding: 12px 16px;
+    padding: 10px 14px;
     background: rgba(0, 0, 0, 0.3);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 12px;
     color: white;
     font-size: 14px;
+    resize: none;
+    max-height: 100px;
+    overflow-y: auto;
+    line-height: 1.4;
+    outline: none;
+    font-family: 'Poppins', sans-serif;
+}
+
+.input-area textarea:focus {
+    border-color: #00ffcc;
+    box-shadow: 0 0 10px rgba(0, 255, 204, 0.2);
 }
 
 .send-btn {
@@ -679,7 +695,7 @@ body.light-theme .dropdown-menu button { color: #333; }
 
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-/* RESPONSIVE DESIGN POU TELEFÒN, TABLÈT AK LAPTOP */
+/* RESPONSIVE DESIGN */
 @media (max-width: 1024px) {
     .chat-container.glass-container.active {
         width: 100%;
