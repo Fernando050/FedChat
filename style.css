@@ -311,6 +311,16 @@ body.light-theme .dropdown-menu button { color: #333; }
     gap: 12px;
 }
 
+.back-list-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 5px 10px 5px 0;
+    display: none;
+}
+
 .friend-status {
     display: block;
     font-size: 11px;
@@ -425,7 +435,7 @@ body.light-theme .dropdown-menu button { color: #333; }
     position: relative;
     word-wrap: break-word;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    white-space: pre-wrap; /* Pèmèt liy yo sote kòrèkteman jan itilizatè a ekri l la */
+    white-space: pre-wrap;
 }
 
 .msg-sent {
@@ -473,7 +483,7 @@ body.light-theme .dropdown-menu button { color: #333; }
     gap: 5px;
 }
 
-/* INPUT AREA (TEXTAREA STYLE) */
+/* INPUT AREA */
 .input-area {
     padding: 12px 20px;
     background: rgba(0, 0, 0, 0.3);
@@ -695,7 +705,7 @@ body.light-theme .dropdown-menu button { color: #333; }
 
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-/* RESPONSIVE DESIGN */
+/* RESPONSIVE DESIGN POU TELEFÒN AK TABLÈT */
 @media (max-width: 1024px) {
     .chat-container.glass-container.active {
         width: 100%;
@@ -704,29 +714,23 @@ body.light-theme .dropdown-menu button { color: #333; }
         border-radius: 0;
         border: none;
     }
-    .sidebar {
-        width: 300px;
-    }
 }
 
 @media (max-width: 768px) {
-    .chat-container.glass-container.active {
-        width: 100%;
-        height: 100vh;
-        border-radius: 0;
-        border: none;
-    }
     .sidebar {
-        width: 100%;
+        width: 100% !important;
         display: flex;
     }
     .sidebar.hidden-mobile {
         display: none !important;
     }
+    .chat-main {
+        width: 100% !important;
+    }
     .chat-main.hidden-mobile {
         display: none !important;
     }
-    .chat-main {
-        width: 100%;
+    .back-list-btn {
+        display: block !important;
     }
 }
