@@ -17,6 +17,13 @@ if (!firebase.apps.length) {
 const auth = firebase.auth();
 const db = firebase.database();
 
+// PWA Service Worker
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW error:', err));
+    });
+}
+
 // Dom Elements
 const authScreen = document.getElementById('authScreen');
 const chatScreen = document.getElementById('chatScreen');
@@ -74,19 +81,12 @@ shareOnlineToggle.checked = shareOnline;
 readReceiptsToggle.checked = readReceipts;
 
 // ==========================================
-// 2. AUTHENTIFICATION & PROFILE (NOM & ID)
+// 2. AUTHENTIFICATION & PRÉSENCE (ONLINE)
 // ==========================================
 auth.onAuthStateChanged((user) => {
     if (user) {
         currentUserId = user.email.split('@')[0];
-        document.getElementById('myIdDisplay').innerText = `@${currentUserId}`;
-        
-        // Chache non itilizatè a nan baz done a
-        db.ref(`users/${currentUserId}/name`).once('value').then((snap) => {
-            const userName = snap.val() || currentUserId;
-            document.getElementById('myNameDisplay').innerText = userName;
-        });
-
+        document.getElementById('myIdDisplay').innerText = currentUserId;
         authScreen.classList.remove('active');
         chatScreen.classList.add('active');
         
@@ -121,20 +121,11 @@ document.getElementById('showLogin').addEventListener('click', () => {
 });
 
 document.getElementById('signupBtn').addEventListener('click', () => {
-    const name = document.getElementById('signupName').value.trim();
     const id = document.getElementById('signupId').value.trim().toLowerCase();
     const pass = document.getElementById('signupPassword').value;
-    
-    if(!name || !id || pass.length < 6) {
-        return alert("Tanpri antre non ou, yon ID, ak yon modpas (omwen 6 karaktè).");
-    }
-    
+    if(!id || pass.length < 6) return alert("Antre yon ID ak yon modpas (omwen 6 karaktè).");
     auth.createUserWithEmailAndPassword(`${id}@fedchat.com`, pass)
-        .then((cred) => {
-            // Sove non itilizatè a nan baz done a
-            db.ref(`users/${id}/name`).set(name);
-            alert("Kont kreye avèk siksè!");
-        })
+        .then(() => alert("Kont kreye avèk siksè!"))
         .catch(err => alert("Erè : " + err.message));
 });
 
@@ -152,7 +143,7 @@ document.getElementById('logoutBtn').addEventListener('click', () => {
 });
 
 // ==========================================
-// 3. MENU & NAVIGATION
+// 3. MENU & NAVIGATION (WHATSAPP STYLE)
 // ==========================================
 mainMenuBtn.addEventListener('click', (e) => {
     e.stopPropagation();
@@ -190,39 +181,30 @@ function loadConversations() {
         conversationsList.innerHTML = '';
         const chats = snapshot.val();
         if (!chats) {
-            conversationsList.innerHTML = '<div class="no-chats-placeholder">Pa gen konvèsasyon ankò.</div>';
+            conversationsList.innerHTML = '<div class="no-chats-placeholder">Pa gen konvèsasyon anko.</div>';
             return;
         }
 
         Object.keys(chats).forEach(peerId => {
             const chatData = chats[peerId];
-            
-            // Chache non zanmi an
-            db.ref(`users/${peerId}/name`).once('value').then((snap) => {
-                const friendName = snap.val() || peerId;
-                const div = document.createElement('div');
-                div.className = `conv-item ${currentPeerId === peerId ? 'active' : ''}`;
-                div.innerHTML = `
-                    <div class="avatar-circle"><i class="fa-solid fa-user"></i></div>
-                    <div class="conv-info">
-                        <div class="conv-name">${friendName}</div>
-                        <div class="conv-last-msg">${chatData.lastMessage || 'Klike pou w pale'}</div>
-                    </div>
-                `;
-                div.addEventListener('click', () => openChat(peerId));
-                conversationsList.appendChild(div);
-            });
+            const div = document.createElement('div');
+            div.className = `conv-item ${currentPeerId === peerId ? 'active' : ''}`;
+            div.innerHTML = `
+                <div class="avatar-circle"><i class="fa-solid fa-user"></i></div>
+                <div class="conv-info">
+                    <div class="conv-name">${peerId}</div>
+                    <div class="conv-last-msg">${chatData.lastMessage || 'Klike pou w pale'}</div>
+                </div>
+            `;
+            div.addEventListener('click', () => openChat(peerId));
+            conversationsList.appendChild(div);
         });
     });
 }
 
 function openChat(peerId) {
     currentPeerId = peerId;
-    
-    db.ref(`users/${peerId}/name`).once('value').then((snap) => {
-        chattingWithDisplay.innerText = snap.val() || peerId;
-    });
-
+    chattingWithDisplay.innerText = currentPeerId;
     callBtnContainer.style.display = 'flex';
     messageInput.disabled = false;
     sendBtn.disabled = false;
@@ -235,14 +217,14 @@ function openChat(peerId) {
 
     db.ref(`users/${peerId}/status`).on('value', (snap) => {
         const status = snap.val();
-        friendStatusDisplay.innerText = status === 'online' ? 'An liy (online)' : 'Offline';
+        friendStatusDisplay.innerText = status === 'online' ? 'An liy (online)' : 'An offline';
     });
 
     loadMessages();
 }
 
 // ==========================================
-// 5. MESSAGERIE (FOTO, STICKERS, VWA)
+// 5. MESSAGERIE (FOTO, STICKERS, VOICE, READ RECEIPTS)
 // ==========================================
 function loadMessages() {
     const chatId = [currentUserId, currentPeerId].sort().join('_');
@@ -303,7 +285,7 @@ messageInput.addEventListener('input', () => {
     }, 1500);
 });
 
-sendBtn.addEventListener('click', () => sendMessage());
+sendBtn.addEventListener('click', sendMessage);
 messageInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') sendMessage(); });
 
 function sendMessage(text = null, type = 'text') {
@@ -380,7 +362,7 @@ voiceBtn.addEventListener('click', async () => {
 });
 
 // ==========================================
-// 6. APÈL (PEERJS)
+// 6. SYSTÈM APÈL (PEERJS)
 // ==========================================
 let peer = null;
 let currentCall = null;
